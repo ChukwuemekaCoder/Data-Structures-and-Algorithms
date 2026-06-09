@@ -52,7 +52,7 @@ Each solution includes:
 
 - Solve at least 150 LeetCode problems across all major topics
 - Build pattern recognition for common problem types
-- 
+- Prepare for software engineering and AI/ML technical interviews
 
 ---
 
