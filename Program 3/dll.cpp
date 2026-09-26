@@ -435,11 +435,12 @@ dll *dll::cat(dll *list2) {
         result->add(cur->kv);
         cur = cur->next;
     }
-
-    cur = list2->first;
-    while (cur != NULL) {
-        result->add(cur->kv);
-        cur = cur->next;
+    if (list2 != NULL) {
+        cur = list2->first;
+        while (cur != NULL) {
+            result->add(cur->kv);
+            cur = cur->next;
+        }
     }
 
     return result;
