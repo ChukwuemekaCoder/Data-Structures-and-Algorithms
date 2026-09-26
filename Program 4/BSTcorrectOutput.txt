@@ -1,0 +1,43 @@
+Do Work - START ********************
+Key not inserted:  22
+Key not inserted:  20
+Key not inserted:  15
+Tree count is 14
+Tree contents are: 
+(5,1006)
+(10,1001)
+(15,1007)
+(17,1013)
+(20,1003)
+(22,1008)
+(30,1005)
+(33,1012)
+(44,1017)
+(45,1010)
+(48,1011)
+(50,1002)
+(52,1004)
+(60,1009)
+
+Delete Count is 6
+Tree count is 8
+Tree contents are: 
+(30,1005)
+(33,1012)
+(44,1017)
+(45,1010)
+(48,1011)
+(50,1002)
+(52,1004)
+(60,1009)
+
+getValue reports this is in the list: (30,1005)
+getValue reports this is in the list: (44,1017)
+getValue reports this is in the list: (48,1011)
+getValue reports this is in the list: (50,1002)
+getValue reports this is in the list: (52,1004)
+getValue reports this is in the list: (60,1009)
+
+The cleared tree status:  count = 0
+The cleared tree contents follow:
+Do Work - END   ********************
