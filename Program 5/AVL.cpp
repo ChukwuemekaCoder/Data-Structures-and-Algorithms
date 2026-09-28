@@ -72,6 +72,8 @@ void AVL::rotateRight(node *&p1) {
     p1 = L;
 }
 
+//*****************************************************************************
+
 //Written by Ojonimi Edime
 
 //Similar to rotate right, we want to move the pointers accordingly 
@@ -91,3 +93,75 @@ void AVL::rotateLeft(node *&p1) {
     p1 = R;
 
 }
+
+//*****************************************************************************
+
+AVL::AVL(bool doBal) {
+    this->doBal = doBal;
+}
+
+//*****************************************************************************
+
+//p is a reference to whichever pointer we're currently using
+bool BST::insert(KEY_VALUE kv, node * &p) {
+    bool result;
+
+    if (p == NULL) {
+        p = new node(kv);//found an empty spot for where the new node begins
+        nCount++;
+        result = true;
+    }
+    else if (kv.key < p->kv.key) {//belongs somewhere in the left subtree
+        result = insert(kv, p->left);
+    }
+    else if (kv.key > p->kv.key) {//belongs somewhere in the right subtree
+        result = insert(kv, p->right);
+    }
+    else {
+        result = false;
+    }
+
+    return result;
+}
+
+//*****************************************************************************
+
+// Handles the two child and single child removal cases
+bool BST::remove(int key, node * &p) {
+    bool result;
+
+    if (p == NULL) {
+        //no key was found so returns false
+        result = false;
+    }
+    else if (key < p->kv.key) {
+        result = remove(key, p->left);
+    }
+    else if (key > p->kv.key) {
+        result = remove(key, p->right);
+    }
+    else {
+        //this is the node to remove
+        if (p->left != NULL && p->right != NULL) {
+        //this has two children
+        //we have to take the smallest value from the right of the children 
+        //then remove the borrowed node
+            KEY_VALUE successor = findMin(p->right);
+            p->kv = successor;
+            result = remove(successor.key, p->right);
+        }
+        else {
+            //this has zero or one child
+            //splice p out and replace it with whichever child it has or NULL
+            //if it has a leaf
+            node *temp = p;
+            p = (p->left != NULL) ? p->left : p->right;
+            delete temp;
+            nCount--;
+            result = true;
+        }
+    }
+
+    return result;
+}
+
