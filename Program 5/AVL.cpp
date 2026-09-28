@@ -111,34 +111,34 @@ void AVL::rotateLeft(node *&p1) {
 //if balancing is off just keep p's height correct. If it's on, check whether 
 //one side is more than 1 taller than the other then rotate
 void AVL::bal(node * &p) {
-    if (p != NULL){
-        if(!doBal){
-	    p->h = calcHeight(p);
-	}
-	else{
-	    if(height(p->left) > height(p->right) + 1){
-	        //left heavy, if the left child leans right, rotate it
-		//left first so a single right rotation will fix p
-		if (height(p->left->left) < height(p->left->right)){
-		    rotateLeft(p->left);
-		}
-		rotateRight(p);
-	    }
-	    else if (height(p->right) > height(p->left) + 1) {
-	        //right heavy, right child leans left
-		if (height(p->right->right) < height(p->right->left)){
-		    rotateRight(p->right);
-		}
-		rotateLeft(p);
-	    }
-	    else{
-	        p->h = calcHeight(p);
-	    }
-	}
-
-    } 
-}
-//*****************************************************************************
+    if (p != NULL) {
+        if (!doBal) {
+            p->h = calcHeight(p);
+        }
+        else {
+            if (height(p->left) > height(p->right) + 1) {
+                // left heavy, if the left child leans right, rotate it
+                // left first so a single right rotation will fix p
+                if (height(p->left->left) < height(p->left->right)) {
+                    rotateLeft(p->left);
+                }
+                rotateRight(p);
+            }
+            else if (height(p->right) > height(p->left) + 1) {
+                // right heavy, if the right child leans left, rotate it
+                // right first so a single left rotation will fix p
+                if (height(p->right->right) < height(p->right->left)) {
+                    rotateRight(p->right);
+                }
+                rotateLeft(p);
+            }
+            else {
+                // already balanced, only the height may have changed
+                p->h = calcHeight(p);
+            }
+        }
+    }
+}//*****************************************************************************
 
 //Written by Chukwuemeka Obinna
 
