@@ -13,6 +13,24 @@ using namespace std;
 
 //Written by Chukwuemeka Obinna
 
+//returns the larger of a and b
+int max(int a, int b) {
+    int result;
+
+    if(a > b){
+        result = a;
+    }
+    else {
+        result = b;
+    }
+
+    return result;
+}
+
+//*****************************************************************************
+
+//Written by Chukwuemeka Obinna
+
 //We want to return the height stored on p, treating an empty or NULL subtree
 //as 0, so that we never need to have a NULL check
 unsigned int AVL::height(node *p) const{
@@ -21,7 +39,7 @@ unsigned int AVL::height(node *p) const{
     if (p == NULL) {
         result = 0;
     }
-    else{
+    else {
         result = p->h;
     }
 
@@ -30,42 +48,29 @@ unsigned int AVL::height(node *p) const{
 
 //*****************************************************************************
 
-//Written by Chukwuemeka Obinna
-
-//returns the larger of a and b
-int max(int a, int b){
-    int result;
-
-    if(a > b){
-        result = a;
-    }
-    else{
-        result = b;
-    }
-
-    return result;
-}
-//*****************************************************************************
-
 //Written by Ojonimi Edime
 
-//This calculates what p's height should be based on the new children's 
-//current heights
+// a node is one taller than its taller child. The heights are converted to int
+// only because max() takes ints
 unsigned int AVL::calcHeight(node *p) const {
     unsigned int result;
-
-    result = max((int) height(p->left), (int) height(p->right)) + 1;
-
+ 
+    if (p == NULL) {
+        result = 0;
+    }
+    else {
+        result = 1 + max((int)height(p->left), (int)height(p->right));
+    }
+ 
     return result;
 }
-
 //*****************************************************************************
 
 
 //Written by Chukwuemeka Obinna
 
 //Essentially, we want to rotate to right by simply adjusting the pointers
-//This is done by re-itializing each pointer accordingly
+//This is done by re-initializing each pointer accordingly
 //p1 is left heavy, so we need to make L the root and p1 its right child
 //we also need to make L's right child p1s right child
 void AVL::rotateRight(node *&p1) {
@@ -142,14 +147,6 @@ void AVL::bal(node * &p) {
 
 //*****************************************************************************
 
-//Written by Chukwuemeka Obinna
-
-AVL::AVL(bool doBal) {
-    this->doBal = doBal;
-}
-
-//*****************************************************************************
-
 //Written by Ojonimi Edime
 
 //p is a reference to whichever pointer we're currently using
@@ -157,20 +154,22 @@ bool AVL::insert(KEY_VALUE kv, node * &p) {
     bool result;
 
     if (p == NULL) {
-        p = new node(kv);//found an empty spot for where the new node begins
+        p = new node(kv);    //found an empty spot so the new node goes here
         nCount++;
         result = true;
     }
-    else if (kv.key < p->kv.key) {//belongs somewhere in the left subtree
+    else if (kv.key < p->kv.key) {    //belongs somewhere in the left subtree
         result = insert(kv, p->left);
     }
-    else if (kv.key > p->kv.key) {//belongs somewhere in the right subtree
+    else if (kv.key > p->kv.key) {    //belongs somewhere in the right subtree
         result = insert(kv, p->right);
     }
     else {
         result = false;
     }
-    bal(p);
+	
+    bal(p);  // update the height of p and rotate if needed
+	
     return result;
 }
 
@@ -181,9 +180,9 @@ bool AVL::insert(KEY_VALUE kv, node * &p) {
 // Handles the two child and single child removal cases
 bool AVL::remove(int key, node * &p) {
     bool result;
-
+ 
     if (p == NULL) {
-        //no key was found so returns false
+        // no key was found so returns false
         result = false;
     }
     else if (key < p->kv.key) {
@@ -193,19 +192,23 @@ bool AVL::remove(int key, node * &p) {
         result = remove(key, p->right);
     }
     else {
-        //this is the node to remove
+        // this is the node to remove
         if (p->left != NULL && p->right != NULL) {
-        //this has two children
-        //we have to take the smallest value from the right of the children 
-        //then remove the borrowed node
-            KEY_VALUE successor = findMin(p->right);
+            // this has two children
+            // copy the smallest key from the right subtree into this node,
+            // then remove the borrowed node
+            node *minNode = p->right;
+            while (minNode->left != NULL) {
+                minNode = minNode->left;
+            }
+            KEY_VALUE successor = minNode->kv;
             p->kv = successor;
             result = remove(successor.key, p->right);
         }
         else {
-            //this has zero or one child
-            //splice p out and replace it with whichever child it has or NULL
-            //if it has a leaf
+            // this has zero or one child
+            // splice p out and replace it with whichever child it has, or
+            // NULL if it has no children
             node *temp = p;
             p = (p->left != NULL) ? p->left : p->right;
             delete temp;
@@ -213,9 +216,49 @@ bool AVL::remove(int key, node * &p) {
             result = true;
         }
     }
-
-    bal(p);
-
+ 
+    bal(p);     // p may now be NULL, which bal handles if need be
+ 
     return result;
 }
 
+//*****************************************************************************
+
+// Written by Ojonimi Edime
+
+// same as BST, each line shows position of node in sorted order starting
+// at 0, the node, and height stored in it
+
+void AVL::printIt(node *p, unsigned int &index) const {
+    if (p != NULL) {
+	    printIt(p->left, index);
+		cout << "At " << index << " the value is " << p;
+		cout << ": height = " << p->h << endl;
+		index++;
+		printIt(p->right, index);
+	}
+}
+ 
+//******************************************************************************
+
+//Written by Chukwuemeka Obinna
+
+// A new AVL tree starts as an empty BST, and remembers wheather to balance 
+// itself
+
+AVL::AVL(bool doBal) {
+    this->doBal = doBal;
+}
+
+//*****************************************************************************
+
+// Written by Chukwuemeka Obinna
+
+// starts the recursive print at root, numbering nodes from 0. Height of
+// whole tree is height shown on root node 
+
+void AVL::printIt() const {
+    unsigned int index = 0;
+	
+	printIt(root, index);
+}
