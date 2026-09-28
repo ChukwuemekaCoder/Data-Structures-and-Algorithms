@@ -1,6 +1,6 @@
-//CSC 255 Fall 2026 - Dr. Wheat
-//Program 5
-//Team 9: Chukwuemeka Obinna and Ojonimi Edime
+// CSC 255 Fall 2026 - Dr. Wheat
+// Program 5
+// Team 9: Chukwuemeka Obinna and Ojonimi Edime
 
 //*****************************************************************************
 
@@ -30,21 +30,31 @@ unsigned int AVL::height(node *p) const{
 
 //*****************************************************************************
 
+//Written by Chukwuemeka Obinna
+
+//returns the larger of a and b
+int max(int a, int b){
+    int result;
+
+    if(a > b){
+        result = a;
+    }
+    else{
+        result = b;
+    }
+
+    return result;
+}
+//*****************************************************************************
+
 //Written by Ojonimi Edime
 
 //This calculates what p's height should be based on the new children's 
 //current heights
 unsigned int AVL::calcHeight(node *p) const {
-    unsigned int leftHeight = height(p->left);
-    unsigned int rightHeight = height(p->right);
     unsigned int result;
 
-    if (leftHeight > rightHeight) {
-        result = leftHeight + 1;
-    }
-    else {
-        result = rightHeight + 1;
-    }
+    result = max((int) height(p->left), (int) height(p->right)) + 1;
 
     return result;
 }
@@ -96,14 +106,52 @@ void AVL::rotateLeft(node *&p1) {
 
 //*****************************************************************************
 
+//Written by Chukwuemeka Obinna
+
+//if balancing is off just keep p's height correct. If it's on, check whether 
+//one side is more than 1 taller than the other then rotate
+void AVL::bal(node * &p) {
+    if (p != NULL){
+        if(!doBal){
+	    p->h = calcHeight(p);
+	}
+	else{
+	    if(height(p->left) > height(p->right) + 1){
+	        //left heavy, if the left child leans right, rotate it
+		//left first so a single right rotation will fix p
+		if (height(p->left->left) < height(p->left->right)){
+		    rotateLeft(p->left);
+		}
+		rotateRight(p);
+	    }
+	    else if (height(p->right) > height(p->left) + 1) {
+	        //right heavy, right child leans left
+		if (height(p->right->right) < height(p->right->left)){
+		    rotateRight(p->right);
+		}
+		rotateLeft(p);
+	    }
+	    else{
+	        p->h = calcHeight(p);
+	    }
+	}
+
+    } 
+}
+//*****************************************************************************
+
+//Written by Chukwuemeka Obinna
+
 AVL::AVL(bool doBal) {
     this->doBal = doBal;
 }
 
 //*****************************************************************************
 
+//Written by Ojonimi Edime
+
 //p is a reference to whichever pointer we're currently using
-bool BST::insert(KEY_VALUE kv, node * &p) {
+bool AVL::insert(KEY_VALUE kv, node * &p) {
     bool result;
 
     if (p == NULL) {
@@ -120,14 +168,16 @@ bool BST::insert(KEY_VALUE kv, node * &p) {
     else {
         result = false;
     }
-
+    bal(p);
     return result;
 }
 
 //*****************************************************************************
 
+//Written by Chukwuemeka Obinna
+
 // Handles the two child and single child removal cases
-bool BST::remove(int key, node * &p) {
+bool AVL::remove(int key, node * &p) {
     bool result;
 
     if (p == NULL) {
@@ -161,6 +211,8 @@ bool BST::remove(int key, node * &p) {
             result = true;
         }
     }
+
+    bal(p);
 
     return result;
 }

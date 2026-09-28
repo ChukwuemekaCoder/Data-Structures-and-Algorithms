@@ -23,11 +23,11 @@ class BST {
         //Recursive remove from from the subtree at p. which is a reference
         // so the child pointer can be rewired when a node is spliced out 
 	virtual bool remove(int key, node * &p);
+	//Moved from private to protected for Program 5 so AVL::remove
+	//can use it when removing a node with two children
+	KEY_VALUE findMin(node *p) const; 
 
     private:
-        // Returns the key/value pair with the smallest key in the subtree
-        //rooted at p and p must not be NULL
-	KEY_VALUE findMin(node *p) const;
         // Recursive in order print helper for sub tree rooted at p
 	void printIt(node *p) const;
         // Recursive search helper for sub tree rooted at p
